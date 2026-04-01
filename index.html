@@ -9,19 +9,25 @@
         :root { --bg-color: #5e1a2b; --notebook-pink: #fdf0f2; --heart-red: #ff4d6d; --spotify-green: #1DB954; }
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Montserrat', sans-serif; background-color: #000; color: white; overflow: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* --- FLOWER ANIMATION LAYER --- */
+        /* --- 🌸 FLOWER BOMB ANIMATION --- */
         #flowerOverlay {
             position: fixed; inset: 0; z-index: 9999; display: none;
-            justify-content: center; align-items: center; pointer-events: none;
+            justify-content: center; align-items: center; pointer-events: none; opacity: 1;
         }
         #thrownFlower {
             font-size: 80px; 
             transform: translate(200%, 200%) rotate(0deg) scale(0);
-            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 
+                transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                opacity 0.6s ease;
         }
         #flowerOverlay.show { display: flex; }
         #flowerOverlay.thrown #thrownFlower {
-            transform: translate(0, 0) rotate(720deg) scale(1.5);
+            transform: translate(0, 0) rotate(720deg) scale(1.6);
+        }
+        #flowerOverlay.vanish #thrownFlower {
+            transform: translate(0, 0) scale(0);
+            opacity: 0;
         }
 
         /* --- CLOSING TRANSITION --- */
@@ -43,18 +49,16 @@
         .notebook-content h2 { font-size: 32px; color: var(--heart-red); margin: 0; }
         .notebook-content p { border-bottom: 1px solid rgba(0,0,0,0.1); padding: 8px 0; margin: 15px 0; width: 280px; font-size: 18px; }
 
-        /* The Special Flower Button */
         .flower-btn {
             background: none; border: none; font-family: 'Patrick Hand', cursive; font-size: 18px; color: #555; cursor: pointer; padding: 0; margin: 15px 0; border-bottom: 2px dashed var(--heart-red); transition: 0.3s;
         }
-        .flower-btn:active { transform: scale(0.95); opacity: 0.7; }
         .flower-btn.hidden { display: none; }
 
         .next-page-btn {
             margin-top: 40px; background: white; border: 2px solid var(--heart-red);
             padding: 15px 35px; border-radius: 50px; cursor: pointer;
             transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2);
-            opacity: 0.5; pointer-events: none; /* Hidden until flower is thrown */
+            opacity: 0.3; pointer-events: none;
         }
         .next-page-btn.show { opacity: 1; pointer-events: auto; }
 
@@ -129,7 +133,7 @@
 
 <div id="app">
     <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; margin-bottom:20px;" onclick="backToPlaylist()">
-        <span>← BACK TO LIST</span>
+        <span>← BACK</span>
         <span>NOW PLAYING</span>
         <span>❤️</span>
     </div>
@@ -158,21 +162,15 @@
 <div id="finalNotePage">
     <div style="font-size: 18px; line-height: 1.6;">
         <p>Umm idk what to type in this last page seriously im so sick I thought I'd type the last page paragraph today but dammnn here I am and uhhh I got sick 🤒</p>
-        
         <p>Well, TBH I just want you to be the same cool weird and funny Amna who always ragebaits me tries not to show off her emotions, tries to hide her feelings but still end up running towards me. And yesss I'm soo glad to have you and Ummm I really you know blah blah blahh zada cheesy nh krte isko uk already... 😂</p>
-
         <p>Too han maine songs save kre the pehle se to wahi add kren hain baaki b kr skta tha but chal hattt itni mehnat laggyi in 5 songs me hi 💀</p>
-
         <p>Too bsss aur aik golddigger, wannabe, dumb, cringe, unfunny lrki ko kya hi chahiye haina? ( Mazak krrha hun ghussa mt hona be, aur agr ho bhi jao to kher h mai mana hi lunga tmhe 😉 )</p>
-
         <p>Baaki JIOOOO! 🥂</p>
-
         <p>Since you're 20 now Aunty enjoy this cool ahh website which I made using AI obviously (not completely but yea it still took alot of efforts so you should be appreciating my efforts bih 💅). And yeah, enjoy your day make you have many more hehe..</p>
         
         <div style="margin-top:30px; text-align:right; font-size:24px; color:var(--heart-red);">
             Yours - Layz ❤️
         </div>
-
         <button class="shutdown-btn" onclick="shutdown()">CLOSE NOTEBOOK & STOP MUSIC</button>
     </div>
 </div>
@@ -181,36 +179,44 @@
 
 <script>
     const songs = [
-        { title: "Heaven And Back", artist: "Chase Atlantic", color: "#4a3c61", file: "heaven_and_back.mp3", note: "You've got that kind of energy that just stands out. Stay exactly as you are. ❤️" },
-        { title: "Swim", artist: "Chase Atlantic", color: "#1d3557", file: "swim.mp3", note: "For the days when things feel heavy—just remember how far you've come. 🌊" },
-        { title: "Cafeteria Song", artist: "Equestria Girls", color: "#e056fd", file: "cafeteria.mp3", note: "This one is just for the vibes. Hope it made you laugh! 🍦" },
-        { title: "Ladybug", artist: "Lou and Lenni-Kim", color: "#d63031", file: "ladybug.mp3", note: "To my favorite person. You're a literal lifesaver sometimes. 🐞" },
-        { title: "Under Our Spell", artist: "The Dazzlings", color: "#2d3436", file: "spell.mp3", note: "You've definitely got me hooked. Have the best day today! ✨" }
+        { title: "Heaven And Back", artist: "Chase Atlantic", color: "#4a3c61", file: "heaven_and_back.mp3", note: "Stay wild and stay you. ❤️" },
+        { title: "Swim", artist: "Chase Atlantic", color: "#1d3557", file: "swim.mp3", note: "Never stop swimming towards your dreams. 🌊" },
+        { title: "Cafeteria Song", artist: "Equestria Girls", color: "#e056fd", file: "cafeteria.mp3", note: "Life is a catchy song with you. 🍦" },
+        { title: "Ladybug", artist: "Lou and Lenni-Kim", color: "#d63031", file: "ladybug.mp3", note: "Simply the best, up to the test! 🐞" },
+        { title: "Under Our Spell", artist: "The Dazzlings", color: "#2d3436", file: "spell.mp3", note: "Wishing you a magical birthday. ✨" }
     ];
 
     let index = 0;
     const audio = document.getElementById('audio');
 
-    // FLOWER THROWING LOGIC
+    // 🌸 FLOWER VANISHING LOGIC
     function throwFlower() {
-        // Hide the button and pre-text, show the post-text
+        // UI text changes
         document.getElementById('preFlowerText').style.display = 'none';
         document.getElementById('flowerBtn').classList.add('hidden');
         document.getElementById('postFlowerText').classList.remove('hidden');
 
-        // Trigger the visual animation
         const overlay = document.getElementById('flowerOverlay');
+        const flower = document.getElementById('thrownFlower');
+        
+        // Step 1: Show layer & trigger "Throw"
         overlay.classList.add('show');
-        setTimeout(() => {
-            overlay.classList.add('thrown');
-        }, 50);
+        setTimeout(() => overlay.classList.add('thrown'), 50);
 
-        // Optional: Keep the flower there, or remove after animation. Let's keep it for effect!
-        // Enable the next page button
-        document.getElementById('nextPageBtn').classList.add('show');
+        // Step 2: Vanish after 1.5 seconds (Throw takes 1.2s)
+        setTimeout(() => {
+            overlay.classList.add('vanish');
+        }, 1500);
+
+        // Step 3: Completely remove from display once faded
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            // Enable the next button so she can continue
+            document.getElementById('nextPageBtn').classList.add('show');
+        }, 2100);
     }
 
-    // Existing App Logic...
+    // Standard App Logic (Same as before)
     function buildPlaylist() {
         const list = document.getElementById('songList');
         songs.forEach((s, i) => {
@@ -230,21 +236,9 @@
             document.getElementById('playlistPage').style.display = 'flex';
         }, 800);
     }
-
-    function openPlayer() {
-        document.getElementById('playlistPage').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-        updateUI();
-        audio.play();
-    }
-
-    function backToPlaylist() {
-        document.getElementById('app').style.display = 'none';
-        document.getElementById('playlistPage').style.display = 'flex';
-    }
-
+    function openPlayer() { document.getElementById('playlistPage').style.display = 'none'; document.getElementById('app').style.display = 'flex'; updateUI(); audio.play(); }
+    function backToPlaylist() { document.getElementById('app').style.display = 'none'; document.getElementById('playlistPage').style.display = 'flex'; }
     function startPlay() { index = Math.floor(Math.random() * songs.length); openPlayer(); }
-
     function updateUI() {
         const s = songs[index];
         document.getElementById('title').innerText = s.title;
@@ -254,39 +248,29 @@
         document.getElementById('playIcon').innerText = '⏸';
         audio.src = s.file;
     }
-
     function togglePlay() { 
         if(audio.paused) { audio.play(); document.getElementById('playIcon').innerText = '⏸'; }
         else { audio.pause(); document.getElementById('playIcon').innerText = '▶'; }
     }
     function next() { index = (index + 1) % songs.length; updateUI(); audio.play(); }
     function prev() { index = (index - 1 + songs.length) % songs.length; updateUI(); audio.play(); }
-
     audio.ontimeupdate = () => {
         const p = (audio.currentTime / audio.duration) * 100;
         document.getElementById('progress').style.width = p + '%';
         document.getElementById('currTime').innerText = formatTime(audio.currentTime);
         document.getElementById('duration').innerText = formatTime(audio.duration);
     };
-
     document.getElementById('seekBar').onclick = (e) => {
         const rect = document.getElementById('seekBar').getBoundingClientRect();
         const p = (e.clientX - rect.left) / rect.width;
         audio.currentTime = p * audio.duration;
     };
-
     function formatTime(s) {
         if(!s) return "0:00";
         let m = Math.floor(s/60), sec = Math.floor(s%60);
         return m + ":" + (sec < 10 ? "0" + sec : sec);
     }
-
-    function showFinalNote() { 
-        const page = document.getElementById('finalNotePage');
-        page.style.display = 'flex';
-        setTimeout(() => page.classList.add('active'), 10);
-    }
-
+    function showFinalNote() { const page = document.getElementById('finalNotePage'); page.style.display = 'flex'; setTimeout(() => page.classList.add('active'), 10); }
     function shutdown() {
         const fadeInterval = setInterval(() => {
             if (audio.volume > 0.1) { audio.volume -= 0.1; }
