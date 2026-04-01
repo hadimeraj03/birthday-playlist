@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Amna's Playlist 💖</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #7b263b;
+            --notebook-pink: #fdf0f2;
+            --ribbon-color: #ff99ac;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #000;
+            color: white; overflow: hidden;
+        }
+
+        /* --- NOTEBOOK PAGE (COVER) --- */
+        #notebookPage {
+            position: fixed;
+            inset: 0;
+            background-color: var(--notebook-pink);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border: 15px solid var(--notebook-pink);
+            /* Creating the Ribbon Border Effect */
+            outline: 2px dashed var(--ribbon-color);
+            outline-offset: -10px;
+        }
+
+        /* Notebook Lines */
+        .lines {
+            position: absolute;
+            inset: 60px 40px;
+            background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 100% 28px;
+            pointer-events: none;
+        }
+
+        .notebook-content {
+            position: relative;
+            z-index: 2;
+            font-family: 'Patrick Hand', cursive;
+            color: #555;
+            text-align: center;
+        }
+
+        .notebook-content h2 { font-size: 32px; color: var(--ribbon-color); margin-bottom: 10px; }
+        .notebook-content p { font-size: 22px; margin: 10px 0; }
+
+        .next-page-btn {
+            margin-top: 50px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 3;
+            transition: transform 0.3s ease;
+        }
+
+        .next-page-btn:hover { transform: scale(1.1); }
+
+        .arrow-circle {
+            width: 60px; height: 60px;
+            border: 2px solid var(--ribbon-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--ribbon-color);
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .btn-text {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--ribbon-color);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- SPOTIFY APP INTERFACE --- */
+        #app {
+            display: none; /* Hidden until button click */
+            height: 100%;
+            flex-direction: column;
+            background: linear-gradient(to bottom, var(--bg-color) 0%, #121212 100%);
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background 0.8s ease;
+        }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; margin-top: 10px; }
+
+        .art-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            perspective: 1000px;
+            margin: 40px 0;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%; height: 100%;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .card-inner.is-flipped { transform: rotateY(180deg); }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            border-radius: 4px;
+        }
+
+        .card-front img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
+
+        .card-back {
+            background: #fff8ee;
+            color: #333;
+            transform: rotateY(180deg);
+            font-family: 'Patrick Hand', cursive;
+            padding: 25px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.5;
+            background-image: repeating-linear-gradient(#fff8ee 0px, #fff8ee 24px, #e8dcc4 25px);
+        }
+
+        .track-info h2 { font-size: 24px; margin: 0; }
+        .track-info p { color: #b3b3b3; margin: 5px 0 20px 0; }
+
+        .progress-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
+        .progress-fill { height: 100%; background: #fff; width: 0%; border-radius: 2px; position: relative; }
+        .progress-fill::after { content:''; position:absolute; right:-5px; top:-4px; width:12px; height:12px; background:#fff; border-radius:50%; }
+
+        .time { display: flex; justify-content: space-between; font-size: 12px; color: #b3b3b3; margin: 8px 0 30px 0; }
+
+        .controls { display: flex; justify-content: space-around; align-items: center; }
+        .play-btn { background: white; color: black; width: 65px; height: 65px; border-radius: 50%; font-size: 25px; border: none; }
+
+        .lyrics-card {
+            margin-top: auto;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+<div id="notebookPage">
+    <div class="lines"></div>
+    <div class="notebook-content">
+        <h2>For Amna 💖</h2>
+        <p>A collection of songs</p>
+        <p>and some notes for you...</p>
+    </div>
+    <button class="next-page-btn" onclick="openPlaylist()">
+        <div class="arrow-circle">→</div>
+        <div class="btn-text">Turn To Next Page</div>
+    </button>
+</div>
+
+<div id="app">
+    <div class="top-bar">
+        <span>⌄</span>
+        <span>PLAYING FROM YOUR LIBRARY</span>
+        <span>⋮</span>
+    </div>
+
+    <div class="art-container" onclick="toggleFlip()">
+        <div class="card-inner" id="cardInner">
+            <div class="card-front">
+                <img id="albumArt" src="" alt="Cover">
+            </div>
+            <div class="card-back">
+                <p id="birthdayNote"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="track-info">
+        <h2 id="title">Loading...</h2>
+        <p id="artist">Artist</p>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="time"><span id="currTime">0:00</span><span id="duration">0:00</span></div>
+
+    <div class="controls">
+        <button onclick="prev()" style="font-size:30px; background:none; color:white; border:none;">⏮</button>
+        <button class="play-btn" onclick="togglePlay()" id="playIcon">▶</button>
+        <button onclick="next()" style="font-size:30px; background:none; color:white; border:none;">⏭</button>
+    </div>
+
+    <div class="lyrics-card" id="lyricsCard">
+        <span>Birthday Wishes</span>
+        <span style="font-size: 10px; opacity: 0.6;">TAP COVER TO READ</span>
+    </div>
+</div>
+
+<audio id="audio"></audio>
+
+<script>
+    const songs = [
+        {
+            title: "Heaven And Back",
+            artist: "Chase Atlantic",
+            color: "#4a3c61",
+            art: "https://i.scdn.co/image/ab67616d0000b273cc090f7a77d33b5c46440f7d",
+            note: "Happy Birthday Amna! 🌙 You’re a little bit of heaven on earth. Stay wild, stay you, and let this year be your best one yet!"
+        },
+        {
+            title: "Swim",
+            artist: "Chase Atlantic",
+            color: "#1d3557",
+            art: "https://i.scdn.co/image/ab67616d0000b2737604f86d63ef2a58b85b2c7e",
+            note: "Amna, you’re deeper than any ocean. 🌊 Never stop swimming towards your dreams. You deserve the whole world today!"
+        },
+        {
+            title: "Cafeteria Song",
+            artist: "Equestria Girls",
+            color: "#e056fd",
+            art: "https://i.scdn.co/image/ab67616d0000b27393437d6e6f9b1689b60b73ea",
+            note: "To my favorite human! 🍦 Life is a party with you around. I hope your birthday is filled with laughter and too much cake!"
+        }
+    ];
+
+    let index = 0;
+    const audio = document.getElementById('audio');
+    const app = document.getElementById('app');
+    const notebook = document.getElementById('notebookPage');
+
+    function openPlaylist() {
+        notebook.style.display = 'none';
+        app.style.display = 'flex';
+        updateUI();
+        // Play automatically on "Turn Page" interaction
+        audio.play().catch(e => console.log("Waiting for more interaction"));
+        document.getElementById('playIcon').innerText = '⏸';
+    }
+
+    function updateUI() {
+        const s = songs[index];
+        document.getElementById('title').innerText = s.title;
+        document.getElementById('artist').innerText = s.artist;
+        document.getElementById('albumArt').src = s.art;
+        document.getElementById('birthdayNote').innerText = s.note;
+        document.getElementById('lyricsCard').style.backgroundColor = s.color;
+        app.style.background = `linear-gradient(to bottom, ${s.color} 0%, #121212 100%)`;
+        audio.src = `songs/${s.title}.mp3`; // Ensure files are named exactly like titles
+        document.getElementById('cardInner').classList.remove('is-flipped');
+    }
+
+    function toggleFlip() { document.getElementById('cardInner').classList.toggle('is-flipped'); }
+
+    function togglePlay() {
+        if (audio.paused) {
+            audio.play();
+            document.getElementById('playIcon').innerText = '⏸';
+        } else {
+            audio.pause();
+            document.getElementById('playIcon').innerText = '▶';
+        }
+    }
+
+    function next() { index = (index + 1) % songs.length; updateUI(); audio.play(); }
+    function prev() { index = (index - 1 + songs.length) % songs.length; updateUI(); audio.play(); }
+
+    audio.ontimeupdate = () => {
+        const p = (audio.currentTime / audio.duration) * 100;
+        document.getElementById('progress').style.width = p + '%';
+        document.getElementById('currTime').innerText = formatTime(audio.currentTime);
+        document.getElementById('duration').innerText = formatTime(audio.duration);
+    };
+
+    function formatTime(sec) {
+        if (!sec) return "0:00";
+        let m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+        return m + ":" + (s < 10 ? "0" + s : s);
+    }
+</script>
+
+</body>
+</html>
