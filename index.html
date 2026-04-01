@@ -6,185 +6,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #5e1a2b; --notebook-pink: #fdf0f2; --ribbon-color: #ff99ac; --spotify-green: #1DB954; }
+        :root { --bg-color: #5e1a2b; --notebook-pink: #fdf0f2; --heart-red: #ff4d6d; --spotify-green: #1DB954; }
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Montserrat', sans-serif; background-color: #000; color: white; overflow: hidden; -webkit-tap-highlight-color: transparent; }
 
-        /* General Notebook Style */
+        /* --- PAGE 1: INTRO NOTEBOOK --- */
         .notebook-page {
             position: fixed; inset: 0; background-color: var(--notebook-pink); z-index: 2000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 40px; box-sizing: border-box; border: 15px solid var(--notebook-pink);
-            outline: 3px solid var(--ribbon-color); outline-offset: -20px;
-            transition: transform 0.6s ease-in-out; font-family: 'Patrick Hand', cursive; color: #555; text-align: center;
+            outline: 3px solid var(--heart-red); outline-offset: -20px;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1); 
+            font-family: 'Patrick Hand', cursive; color: #555; text-align: center;
         }
-        .notebook-page::before, .notebook-page::after { content: '🎀'; position: absolute; font-size: 30px; }
+        .notebook-page::before, .notebook-page::after { content: '❤️'; position: absolute; font-size: 30px; animation: pulse 2s infinite; }
         .notebook-page::before { top: 30px; left: 30px; }
         .notebook-page::after { bottom: 30px; right: 30px; }
         
-        .notebook-content h2 { font-size: 36px; color: var(--ribbon-color); margin: 0; }
-        .notebook-content p { border-bottom: 1px solid rgba(0,0,0,0.1); padding: 5px 0; margin: 10px 0; width: 250px; }
-        
-        /* Turning Action */
-        .page-turner { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        .notebook-content h2 { font-size: 38px; color: var(--heart-red); margin: 0; }
+        .notebook-content p { border-bottom: 1px solid rgba(0,0,0,0.1); padding: 8px 0; margin: 15px 0; width: 280px; font-size: 20px; }
+
         .next-page-btn {
-            background: white; border: 2px solid var(--ribbon-color);
-            padding: 12px 25px; border-radius: 50px; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-top: 40px; background: white; border: 2px solid var(--heart-red);
+            padding: 15px 35px; border-radius: 50px; cursor: pointer;
+            transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2);
         }
+        .next-page-btn:active { transform: scale(0.9); background: var(--notebook-pink); }
 
-        /* --- STYLING APP PAGES --- */
-        #app, #playlistPage { display: none; height: 100vh; flex-direction: column; box-sizing: border-box; }
+        /* --- PAGE 2: PLAYLIST --- */
+        #playlistPage { display: none; height: 100vh; flex-direction: column; background: linear-gradient(to bottom, #2d3436 0%, #121212 50%); padding: 20px 25px; overflow-y: auto; }
+        .shuffle-play-btn { background: var(--spotify-green); color: black; border: none; padding: 15px 40px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .song-item { display: grid; grid-template-columns: 50px 1fr; align-items: center; padding: 12px 0; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* 1. PLAYLIST PAGE */
-        #playlistPage {
-            background: linear-gradient(to bottom, #1d3557 0%, #121212 50%);
-            padding: 20px 25px;
-            overflow-y: auto;
-        }
-        .playlist-header { display: flex; flex-direction: column; align-items: flex-start; margin-top: 30px; }
-        .playlist-info p { color: #b3b3b3; font-size: 14px; margin: 5px 0 0 0; }
-        
-        .play-btns-row { display: flex; align-items: center; justify-content: flex-end; width: 100%; margin-top: 15px; }
-        .shuffle-play-btn { background: var(--spotify-green); color: black; border: none; padding: 15px 30px; border-radius: 50px; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-
-        .song-list { margin-top: 25px; padding-bottom: 80px; }
-        .song-item { display: grid; grid-template-columns: 50px 1fr 50px; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: background 0.3s; border-radius: 8px; }
-        .song-item:hover { background: rgba(255,255,255,0.05); }
-        .song-art-small { width: 40px; height: 40px; background: #222; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--spotify-green); font-family: 'Patrick Hand', cursive; }
-        .song-info { display: flex; flex-direction: column; }
-        .song-info h4 { margin: 0; font-weight: 600; font-size: 15px; }
-        .song-info p { margin: 0; color: #b3b3b3; font-size: 13px; }
-        .current-mark { font-size: 20px; color: var(--spotify-green); }
-
-        /* 2. PLAYER PAGE */
-        #app {
-            background: linear-gradient(to bottom, var(--bg-color) 0%, #121212 100%);
-            padding: 20px 25px;
-            transition: background 0.8s ease;
-        }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; opacity: 0.7; margin-top: 10px; cursor: pointer;}
-
+        /* --- PAGE 3: PLAYER --- */
+        #app { display: none; height: 100vh; flex-direction: column; padding: 20px 25px; box-sizing: border-box; }
         .art-container {
-            width: 100%; aspect-ratio: 1/1; 
-            background: #fff8ee; color: #333; 
-            border-radius: 8px; overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            margin: 30px 0;
-            font-family: 'Patrick Hand', cursive; 
-            padding: 25px; box-sizing: border-box;
-            display: flex; align-items: center; justify-content: center; text-align: center; font-size: 19px;
-            background-image: repeating-linear-gradient(#fff8ee 0px, #fff8ee 24px, #e8dcc4 25px);
+            width: 100%; aspect-ratio: 1/1; background: #fff8ee; color: #333; border-radius: 12px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin: 30px 0; padding: 30px; box-sizing: border-box;
+            display: flex; align-items: center; justify-content: center; text-align: center; font-size: 20px;
+            font-family: 'Patrick Hand', cursive; background-image: repeating-linear-gradient(#fff8ee 0px, #fff8ee 24px, #e8dcc4 25px);
         }
-        .track-info { margin-top: -10px; display: flex; flex-direction: column; }
-        .track-info h2 { font-size: 26px; margin: 0; font-weight: 700; }
-        .track-info p { color: #b3b3b3; margin: 5px 0; font-size: 16px; }
 
-        /* Seekable Progress Bar */
-        .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; cursor: pointer; margin-top: 20px; position: relative; }
-        .progress-fill { height: 100%; background: #fff; width: 0%; border-radius: 3px; }
-        .progress-bar:hover .progress-fill::after { content:''; position:absolute; right:-6px; top:-3px; width:12px; height:12px; background:#fff; border-radius:50%; }
+        /* Seekbar functionality */
+        .progress-container { width: 100%; height: 20px; display: flex; align-items: center; cursor: pointer; margin-top: 10px; }
+        .progress-bar { width: 100%; height: 5px; background: rgba(255,255,255,0.2); border-radius: 5px; position: relative; }
+        .progress-fill { height: 100%; background: #fff; width: 0%; border-radius: 5px; position: relative; }
+        .progress-fill::after { content: ''; position: absolute; right: -5px; top: -4px; width: 13px; height: 13px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
 
-        .time { display: flex; justify-content: space-between; font-size: 12px; color: #b3b3b3; margin: 8px 0 25px 0; }
-        .controls { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
-        .play-btn { background: white; color: black; width: 65px; height: 65px; border-radius: 50%; font-size: 25px; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s; }
-        .play-btn:active { transform: scale(0.95); }
+        .play-btn { background: white; color: black; width: 70px; height: 70px; border-radius: 50%; border: none; font-size: 28px; cursor: pointer; transition: 0.2s; }
+        .play-btn:hover { transform: scale(1.05); }
 
-        .lyrics-card { margin-top: auto; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 12px 12px 0 0; font-weight: 700; display: flex; justify-content: space-between; cursor: pointer;}
-        
-        /* 3. FINAL NOTE NOTEBOOK PAGE */
+        /* --- PAGE 4: FINAL NOTE --- */
         #finalNotePage {
-            position: fixed; inset: 0; background-color: #fff8ee; z-index: 1000;
-            display: flex; flex-direction: column; padding: 50px 40px; box-sizing: border-box;
-            border: 15px solid #fff8ee; outline: 3px solid var(--ribbon-color); outline-offset: -20px;
-            transform: translateX(100%); transition: transform 0.8s ease;
-            font-family: 'Patrick Hand', cursive; color: #555; text-align: left;
-            background-image: repeating-linear-gradient(#fff8ee 0px, #fff8ee 24px, #e8dcc4 25px);
-            overflow-y: auto;
+            position: fixed; inset: 0; background-color: #fff8ee; z-index: 3000;
+            display: none; flex-direction: column; padding: 60px 40px; box-sizing: border-box;
+            border: 15px solid #fff8ee; outline: 3px solid var(--heart-red); outline-offset: -20px;
+            font-family: 'Patrick Hand', cursive; color: #444; background-image: repeating-linear-gradient(#fff8ee 0px, #fff8ee 24px, #e8dcc4 25px);
+            overflow-y: auto; transform: translateY(100%); transition: transform 0.8s ease;
         }
-        #finalNotePage.is-active { transform: translateX(0%); }
-        .final-header h2 { font-size: 32px; color: var(--ribbon-color); margin: 0 0 20px 0; text-align: center; }
-        .final-content { font-size: 18px; line-height: 1.6; padding-bottom: 30px; }
-        .final-content p { margin: 10px 0; }
-        .signature { margin-top: 30px; text-align: right; font-size: 22px; color: var(--ribbon-color); }
+        #finalNotePage.active { display: flex; transform: translateY(0); }
     </style>
 </head>
 <body>
 
 <div class="notebook-page" id="notebookPage">
     <div class="notebook-content">
-        <h2> Happy Birthday Amna! 🎀 </h2>
-        <p>Your playlist notebook...</p>
-        <p>Turn the page to see it!</p>
+        <h2>Happy Birthday Amna! ❤️</h2>
+        <p>A little surprise for you...</p>
+        <p>A playlist of your favorites...</p>
+        <p>And some hidden notes.</p>
     </div>
-    <div class="page-turner">
-        <button class="next-page-btn" onclick="goToPlaylist()">
-            <span style="color:var(--ribbon-color); font-size: 24px;">→</span>
-            <span style="color:var(--ribbon-color); font-size: 10px; font-weight:700;">SEE PLAYLIST</span>
-        </button>
-    </div>
+    <button class="next-page-btn" onclick="goToPlaylist()">
+        <span style="color:var(--heart-red); font-size: 24px;">→</span>
+        <span style="color:var(--heart-red); font-size: 12px; font-weight:700; letter-spacing: 1px;">OPEN NOTEBOOK</span>
+    </button>
 </div>
 
 <div id="playlistPage">
-    <div style="font-size: 11px; font-weight:700; letter-spacing:1px; margin-top:10px; text-align:center;">YOUR CURATED LIBRARY</div>
-    <div class="playlist-header">
-        <div class="playlist-info">
-            <h2 style="font-size: 28px; margin:0;">For Amna 💖</h2>
-            <p>Your unique wishlist by Song</p>
-            <p>5 unique notes • Curated for You</p>
-        </div>
-        <div class="play-btns-row">
-            <button class="shuffle-play-btn" onclick="startPlay()">Shuffle Play</button>
-        </div>
-    </div>
-    
-    <div class="song-list" id="songList">
-        </div>
+    <h2 style="margin-top:40px;">For Amna 💖</h2>
+    <p style="color:#b3b3b3; margin-bottom:20px;">Curated with love just for your birthday.</p>
+    <button class="shuffle-play-btn" onclick="startPlay()">SHUFFLE PLAY</button>
+    <div id="songList" style="margin-top:30px;"></div>
 </div>
 
 <div id="app">
-    <div class="top-bar" onclick="backToPlaylist()">
-        <span>← Playlist</span>
-        <span style="opacity:1">NOW PLAYING</span>
-        <span>⋮</span>
+    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; margin-bottom:20px;" onclick="backToPlaylist()">
+        <span>← BACK</span>
+        <span style="letter-spacing:1px;">NOW PLAYING</span>
+        <span>❤️</span>
+    </div>
+    <div class="art-container" id="notebookCover"></div>
+    <h2 id="title" style="margin:0; font-size:28px;">Song Title</h2>
+    <p id="artist" style="color:#b3b3b3; margin:5px 0 20px 0;">Artist</p>
+
+    <div class="progress-container" id="seekBar">
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; font-size:12px; color:#b3b3b3; margin-top:8px;">
+        <span id="currTime">0:00</span><span id="duration">0:00</span>
     </div>
 
-    <div class="art-container" id="notebookCover">
-        <p id="birthdayNote">Wish message will appear here...</p>
-    </div>
-
-    <div class="track-info">
-        <h2 id="title">Loading...</h2>
-        <p id="artist">Artist</p>
-    </div>
-
-    <div class="progress-bar" id="seekBar"><div class="progress-fill" id="progress"></div></div>
-    <div class="time"><span id="currTime">0:00</span><span id="duration">0:00</span></div>
-
-    <div class="controls">
-        <button onclick="prev()" style="font-size:35px; background:none; color:white; border:none; cursor:pointer;">⏮</button>
+    <div style="display:flex; justify-content:space-around; align-items:center; margin-top:30px;">
+        <button onclick="prev()" style="background:none; border:none; color:white; font-size:35px;">⏮</button>
         <button class="play-btn" onclick="togglePlay()" id="playIcon">▶</button>
-        <button onclick="next()" style="font-size:35px; background:none; color:white; border:none; cursor:pointer;">⏭</button>
+        <button onclick="next()" style="background:none; border:none; color:white; font-size:35px;">⏭</button>
     </div>
 
-    <div class="lyrics-card" onclick="goToFinalNote()">
-        <span>Final Detailed Wish 💝</span>
-        <span style="font-size: 10px; opacity: 0.6; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 10px;">TAP HERE</span>
+    <div onclick="showFinalNote()" style="margin-top:auto; background:rgba(255,255,255,0.1); padding:20px; border-radius:15px; text-align:center; font-weight:700; cursor:pointer;">
+        READ MY FINAL WISH 💝
     </div>
 </div>
 
 <div id="finalNotePage">
-    <div class="lines"></div>
-    <div class="notebook-content final-content">
-        <div class="final-header">
-            <h2>Amna, a special note for you... 🎀</h2>
-        </div>
-        <p> Happy Birthday to the most amazing girl I know! </p>
-        <p> Creating this playlist app was a truly special experience, and it felt right to dedicate it all to you. I hope the songs brought a smile to your face and the unique notes felt like a little hug. </p>
-        <p> You have a way of brightening up the world just by being yourself. Your strength, your kindness, and your incredible spirit are inspirations. I hope this birthday is just the beginning of your best year yet—filled with laughter, adventure, success, and everything beautiful that you deserve. </p>
-        <p> Know that you are deeply appreciated and loved. This whole interactive adventure, from the notebook introduction to this final page, was designed to remind you how unique and wonderful you are. I hope you found it as enjoyable and interactive as I did creating it for you. </p>
-        <p> Shine brighter than any star! I'm so grateful to have you in my life. Have an absolutely mesmerizing and magical birthday! </p>
-        <div class="signature">
-            - [Your Name] 💖
+    <h2 style="color:var(--heart-red); text-align:center; font-size:32px;">Dear Amna, ❤️</h2>
+    <div style="font-size: 20px; line-height: 1.6;">
+        <p>Happy Birthday to the most wonderful person I know! 🎂🎉 I wanted to make something as unique and special as you are, so I built this little "Notebook Player" just for you. 📱✨</p>
+        <p>Each song in this list reminds me of a different part of your personality—your kindness, your energy, and the way you always make everything better just by being there. 🌟</p>
+        <p>I hope this year brings you all the happiness in the world. May you keep smiling, keep dreaming big, and keep being the amazing Amna everyone loves so much. 🎈💖</p>
+        <p>Enjoy your special day to the fullest! You deserve all the cake, all the gifts, and all the love today! 🍰🎁💐</p>
+        <div style="margin-top:40px; text-align:right; font-size:26px; color:var(--heart-red);">
+            Yours - Layz ❤️
         </div>
     </div>
 </div>
@@ -193,93 +135,59 @@
 
 <script>
     const songs = [
-        { title: "Heaven And Back", artist: "Chase Atlantic", color: "#4a3c61", file: "heaven_and_back.mp3", note: "Happy Birthday Amna! 🌙 You’re a little bit of heaven. Stay wild and stay you. This year is yours!" },
-        { title: "Swim", artist: "Chase Atlantic", color: "#1d3557", file: "swim.mp3", note: "Amna, you’re deeper than the ocean. 🌊 I hope you never stop swimming towards your dreams. Have the best birthday!" },
-        { title: "Cafeteria Song", artist: "Equestria Girls", color: "#e056fd", file: "cafeteria.mp3", note: "To my favorite human! 🍦 Life is better when we're together like a catchy song. I hope your day is filled with laughter!" },
-        { title: "Ladybug", artist: "Lou and Lenni-Kim", color: "#d63031", file: "ladybug.mp3", note: "You’re simply the best, up to the test when things go wrong! 🐞 Happy Birthday to my favorite superhero." },
-        { title: "Under Our Spell", artist: "The Dazzlings", color: "#2d3436", file: "spell.mp3", note: "You definitely have me under your spell! ✨ Wishing you a birthday that's as magical and mesmerizing as you are. Keep shining, Amna!" }
+        { title: "Heaven And Back", artist: "Chase Atlantic", color: "#4a3c61", file: "heaven_and_back.mp3", note: "Happy Birthday Amna! 🌙 You’re a little bit of heaven. Stay wild and stay you!" },
+        { title: "Swim", artist: "Chase Atlantic", color: "#1d3557", file: "swim.mp3", note: "Amna, you’re deeper than the ocean. 🌊 Never stop swimming towards your dreams!" },
+        { title: "Cafeteria Song", artist: "Equestria Girls", color: "#e056fd", file: "cafeteria.mp3", note: "Life is a party with you! 🍦 Stay sweet and stay fun." },
+        { title: "Ladybug", artist: "Lou and Lenni-Kim", color: "#d63031", file: "ladybug.mp3", note: "You’re simply the best! 🐞 Happy Birthday to my favorite superhero." },
+        { title: "Under Our Spell", artist: "The Dazzlings", color: "#2d3436", file: "spell.mp3", note: "You definitely have me under your spell! ✨ Have a magical day." }
     ];
 
     let index = 0;
     const audio = document.getElementById('audio');
-    const introPage = document.getElementById('notebookPage');
-    const playlistPage = document.getElementById('playlistPage');
-    const app = document.getElementById('app');
-    const finalNotePage = document.getElementById('finalNotePage');
-    const seekBar = document.getElementById('seekBar');
-
-    // Load Playlist on Page Load
-    window.addEventListener('load', buildPlaylist);
 
     function buildPlaylist() {
         const list = document.getElementById('songList');
         songs.forEach((s, i) => {
-            let div = document.createElement('div');
+            const div = document.createElement('div');
             div.className = 'song-item';
-            div.innerHTML = `
-                <div class="song-art-small">P${i+1}</div>
-                <div class="song-info">
-                    <h4>${s.title}</h4>
-                    <p>${s.artist}</p>
-                </div>
-                <div class="current-mark" id="song-${i}"></div>
-            `;
-            div.onclick = () => playFromPlaylist(i);
+            div.innerHTML = `<div style="font-size:20px;">🎵</div><div><div style="font-weight:700;">${s.title}</div><div style="font-size:12px; color:#b3b3b3;">${s.artist}</div></div>`;
+            div.onclick = () => { index = i; openPlayer(); };
             list.appendChild(div);
         });
     }
+    buildPlaylist();
 
-    // Page Transitions
     function goToPlaylist() {
-        introPage.style.transform = 'translateY(-100%)';
+        document.getElementById('notebookPage').style.transform = 'translateY(-100%)';
         setTimeout(() => {
-            introPage.style.display = 'none';
-            playlistPage.style.display = 'flex';
-        }, 600);
+            document.getElementById('notebookPage').style.display = 'none';
+            document.getElementById('playlistPage').style.display = 'flex';
+        }, 800);
     }
 
-    function goToPlayer() {
-        playlistPage.style.display = 'none';
-        app.style.display = 'flex';
+    function openPlayer() {
+        document.getElementById('playlistPage').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
         updateUI();
+        audio.play();
     }
 
     function backToPlaylist() {
-        app.style.display = 'none';
-        playlistPage.style.display = 'flex';
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('playlistPage').style.display = 'flex';
+        audio.pause();
     }
 
-    function goToFinalNote() {
-        // Slide final note from the right
-        finalNotePage.style.display = 'flex';
-        setTimeout(() => {
-            finalNotePage.classList.add('is-active');
-        }, 10);
-    }
-
-    // Player Logic
-    function startPlay() {
-        index = Math.floor(Math.random() * songs.length); // Shuffle start
-        goToPlayer();
-        audio.play();
-    }
-
-    function playFromPlaylist(i) {
-        index = i;
-        goToPlayer();
-        audio.play();
-    }
+    function startPlay() { index = Math.floor(Math.random() * songs.length); openPlayer(); }
 
     function updateUI() {
         const s = songs[index];
         document.getElementById('title').innerText = s.title;
         document.getElementById('artist').innerText = s.artist;
-        document.getElementById('birthdayNote').innerText = s.note;
-        document.getElementById('lyricsCard').style.backgroundColor = s.color;
-        app.style.background = `linear-gradient(to bottom, ${s.color} 0%, #121212 100%)`;
-        
-        audio.src = s.file;
+        document.getElementById('notebookCover').innerText = s.note;
+        document.getElementById('app').style.background = `linear-gradient(to bottom, ${s.color} 0%, #121212 100%)`;
         document.getElementById('playIcon').innerText = '⏸';
+        audio.src = s.file;
     }
 
     function togglePlay() { 
@@ -289,27 +197,28 @@
     function next() { index = (index + 1) % songs.length; updateUI(); audio.play(); }
     function prev() { index = (index - 1 + songs.length) % songs.length; updateUI(); audio.play(); }
 
-    // Audio progress logic
     audio.ontimeupdate = () => {
-        if (!audio.duration) return;
         const p = (audio.currentTime / audio.duration) * 100;
         document.getElementById('progress').style.width = p + '%';
         document.getElementById('currTime').innerText = formatTime(audio.currentTime);
         document.getElementById('duration').innerText = formatTime(audio.duration);
     };
 
-    // Seek logic
-    seekBar.addEventListener('click', (e) => {
-        const width = seekBar.clientWidth;
-        const clickX = e.offsetX;
-        const duration = audio.duration;
-        audio.currentTime = (clickX / width) * duration;
-    });
+    document.getElementById('seekBar').onclick = (e) => {
+        const rect = document.getElementById('seekBar').getBoundingClientRect();
+        const p = (e.clientX - rect.left) / rect.width;
+        audio.currentTime = p * audio.duration;
+    };
 
-    function formatTime(sec) {
-        if(!sec) return "0:00";
-        let m = Math.floor(sec/60), s = Math.floor(sec%60);
-        return m + ":" + (s < 10 ? "0" + s : s);
+    function formatTime(s) {
+        if(!s) return "0:00";
+        let m = Math.floor(s/60), sec = Math.floor(s%60);
+        return m + ":" + (sec < 10 ? "0" + sec : sec);
+    }
+
+    function showFinalNote() { 
+        const page = document.getElementById('finalNotePage');
+        page.classList.add('active'); 
     }
 </script>
 </body>
