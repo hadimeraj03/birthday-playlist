@@ -25,8 +25,8 @@
         .heart-icon { font-size: 40px; margin-bottom: 20px; display: inline-block; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
 
-        .notebook-content h2 { font-size: 38px; color: var(--heart-red); margin: 0; }
-        .notebook-content p { border-bottom: 1px solid rgba(0,0,0,0.1); padding: 8px 0; margin: 15px 0; width: 280px; font-size: 20px; }
+        .notebook-content h2 { font-size: 32px; color: var(--heart-red); margin: 0; }
+        .notebook-content p { border-bottom: 1px solid rgba(0,0,0,0.1); padding: 8px 0; margin: 15px 0; width: 280px; font-size: 18px; }
 
         .next-page-btn {
             margin-top: 40px; background: white; border: 2px solid var(--heart-red);
@@ -44,11 +44,10 @@
         .art-container {
             width: 100%; aspect-ratio: 1/1; background: #fff8ee; color: #333; border-radius: 12px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin: 30px 0; padding: 30px; box-sizing: border-box;
-            display: flex; align-items: center; justify-content: center; text-align: center; font-size: 20px;
+            display: flex; align-items: center; justify-content: center; text-align: center; font-size: 18px;
             font-family: 'Patrick Hand', cursive; background-image: repeating-linear-gradient(#fff8ee 0px, #fff8ee 24px, #e8dcc4 25px);
         }
 
-        /* Seekbar */
         .progress-container { width: 100%; height: 20px; display: flex; align-items: center; cursor: pointer; margin-top: 10px; }
         .progress-bar { width: 100%; height: 5px; background: rgba(255,255,255,0.2); border-radius: 5px; position: relative; }
         .progress-fill { height: 100%; background: #fff; width: 0%; border-radius: 5px; position: relative; }
@@ -59,7 +58,7 @@
         /* --- PAGE 4: FINAL NOTE --- */
         #finalNotePage {
             position: fixed; inset: 0; background-color: #fff8ee; z-index: 3000;
-            display: none; flex-direction: column; padding: 60px 40px; box-sizing: border-box;
+            display: none; flex-direction: column; padding: 60px 30px; box-sizing: border-box;
             border: 15px solid #fff8ee; outline: 3px solid var(--heart-red); outline-offset: -20px;
             font-family: 'Patrick Hand', cursive; color: #444; background-image: repeating-linear-gradient(#fff8ee 0px, #fff8ee 24px, #e8dcc4 25px);
             overflow-y: auto; transform: translateX(100%); transition: transform 0.8s ease;
@@ -69,9 +68,8 @@
         .shutdown-btn {
             margin-top: 50px; background: #333; color: white; border: none; padding: 15px; 
             border-radius: 12px; font-family: 'Montserrat', sans-serif; font-weight: 700; 
-            font-size: 12px; letter-spacing: 2px; cursor: pointer; opacity: 0.6; transition: 0.3s;
+            font-size: 11px; letter-spacing: 2px; cursor: pointer; opacity: 0.6; width: 100%;
         }
-        .shutdown-btn:hover { opacity: 1; background: #000; }
     </style>
 </head>
 <body>
@@ -81,19 +79,18 @@
 <div class="notebook-page" id="notebookPage">
     <div class="notebook-content">
         <span class="heart-icon">❤️</span>
-        <h2>Happy Birthday Amna!</h2>
-        <p>I made something for you...</p>
-        <p>A playlist of the tracks we love.</p>
-        <p>Go ahead and open it.</p>
+        <h2>Happy Birthday Dumbahh Amna</h2>
+        <p>Hamesha khush raho abaad raho mere sath raho...</p>
+        <p>Here is a flower catch it bih 🌹</p>
     </div>
     <button class="next-page-btn" onclick="goToPlaylist()">
-        <span style="color:var(--heart-red); font-size: 12px; font-weight:700; letter-spacing: 1px;">START THE VIBE →</span>
+        <span style="color:var(--heart-red); font-size: 12px; font-weight:700; letter-spacing: 1px;">OPEN SURPRISE →</span>
     </button>
 </div>
 
 <div id="playlistPage">
-    <h2 style="margin-top:40px; font-size: 32px;">For Amna 💖</h2>
-    <p style="color:#b3b3b3; margin-bottom:20px;">Every song has a note behind it.</p>
+    <h2 style="margin-top:40px; font-size: 28px;">The "Bih" Playlist 💖</h2>
+    <p style="color:#b3b3b3; margin-bottom:20px;">Curated efforts for 20-year-old Aunty.</p>
     <button class="shuffle-play-btn" onclick="startPlay()">SHUFFLE PLAY</button>
     <div id="songList" style="margin-top:30px;"></div>
 </div>
@@ -122,17 +119,24 @@
     </div>
 
     <div onclick="showFinalNote()" style="margin-top:auto; background:rgba(255,255,255,0.1); padding:20px; border-radius:15px; text-align:center; font-weight:700; cursor:pointer; font-size: 13px;">
-        READ THE LAST PAGE 💝
+        FINAL WISH FROM LAYZ 💝
     </div>
 </div>
 
 <div id="finalNotePage">
-    <h2 style="color:var(--heart-red); text-align:center; font-size:32px; margin-bottom: 30px;">Dear Amna,</h2>
-    <div style="font-size: 19px; line-height: 1.6;">
-        <p>Honestly, I was trying to find a way to make your birthday feel a bit different this year. I know you love your music, so I thought, why not build a little space where those songs could actually say something? 🎧</p>
-        <p>I spent some time putting this together because you’re one of those people who actually deserves the effort. You have this way of making everything around you feel a bit lighter, and I wanted to give some of that energy back to you today. ✨</p>
-        <p>I hope you liked the tracks and the little notes I hid in there. More than anything, I hope your day is exactly how you want it to be—no stress, just good vibes and a lot of smiles. You’re doing amazing, and I’m really glad I get to be a part of your world. 🌍💖</p>
-        <p>Happy Birthday, Amna. Keep being exactly who you are.</p>
+    <div style="font-size: 18px; line-height: 1.6;">
+        <p>Umm idk what to type in this last page seriously im so sick I thought I'd type the last page paragraph today but dammnn here I am and uhhh I got sick 🤒</p>
+        
+        <p>Well, TBH I just want you to be the same cool weird and funny Amna who always ragebaits me tries not to show off her emotions, tries to hide her feelings but still end up running towards me. And yesss I'm soo glad to have you and Ummm I really you know blah blah blahh zada cheesy nh krte isko uk already... 😂</p>
+
+        <p>Too han maine songs save kre the pehle se to wahi add kren hain baaki b kr skta tha but chal hattt itni mehnat laggyi in 5 songs me hi 💀</p>
+
+        <p>Too bsss aur aik golddigger, wannabe, dumb, cringe, unfunny lrki ko kya hi chahiye haina? ( Mazak krrha hun ghussa mt hona be, aur agr ho bhi jao to kher h mai mana hi lunga tmhe 😉 )</p>
+
+        <p>Baaki JIOOOO! 🥂</p>
+
+        <p>Since you're 20 now Aunty enjoy this cool ahh website which I made using AI obviously (not completely but yea it still took alot of efforts so you should be appreciating my efforts bih 💅). And yeah, enjoy your day make you have many more hehe..</p>
+        
         <div style="margin-top:30px; text-align:right; font-size:24px; color:var(--heart-red);">
             Yours - Layz ❤️
         </div>
@@ -232,21 +236,13 @@
     }
 
     function shutdown() {
-        // 1. Fade out music
         const fadeInterval = setInterval(() => {
             if (audio.volume > 0.1) { audio.volume -= 0.1; }
-            else { 
-                audio.pause(); 
-                clearInterval(fadeInterval); 
-            }
+            else { audio.pause(); clearInterval(fadeInterval); }
         }, 100);
-
-        // 2. Visual shutdown
         const overlay = document.getElementById('shutdownOverlay');
         overlay.style.display = 'block';
-        setTimeout(() => {
-            overlay.classList.add('active');
-        }, 10);
+        setTimeout(() => { overlay.classList.add('active'); }, 10);
     }
 </script>
 </body>
