@@ -9,6 +9,21 @@
         :root { --bg-color: #5e1a2b; --notebook-pink: #fdf0f2; --heart-red: #ff4d6d; --spotify-green: #1DB954; }
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Montserrat', sans-serif; background-color: #000; color: white; overflow: hidden; -webkit-tap-highlight-color: transparent; }
 
+        /* --- FLOWER ANIMATION LAYER --- */
+        #flowerOverlay {
+            position: fixed; inset: 0; z-index: 9999; display: none;
+            justify-content: center; align-items: center; pointer-events: none;
+        }
+        #thrownFlower {
+            font-size: 80px; 
+            transform: translate(200%, 200%) rotate(0deg) scale(0);
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #flowerOverlay.show { display: flex; }
+        #flowerOverlay.thrown #thrownFlower {
+            transform: translate(0, 0) rotate(720deg) scale(1.5);
+        }
+
         /* --- CLOSING TRANSITION --- */
         #shutdownOverlay { position: fixed; inset: 0; background: black; z-index: 9999; display: none; transform: scaleY(0); transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
         #shutdownOverlay.active { display: block; transform: scaleY(1); }
@@ -28,11 +43,20 @@
         .notebook-content h2 { font-size: 32px; color: var(--heart-red); margin: 0; }
         .notebook-content p { border-bottom: 1px solid rgba(0,0,0,0.1); padding: 8px 0; margin: 15px 0; width: 280px; font-size: 18px; }
 
+        /* The Special Flower Button */
+        .flower-btn {
+            background: none; border: none; font-family: 'Patrick Hand', cursive; font-size: 18px; color: #555; cursor: pointer; padding: 0; margin: 15px 0; border-bottom: 2px dashed var(--heart-red); transition: 0.3s;
+        }
+        .flower-btn:active { transform: scale(0.95); opacity: 0.7; }
+        .flower-btn.hidden { display: none; }
+
         .next-page-btn {
             margin-top: 40px; background: white; border: 2px solid var(--heart-red);
             padding: 15px 35px; border-radius: 50px; cursor: pointer;
             transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2);
+            opacity: 0.5; pointer-events: none; /* Hidden until flower is thrown */
         }
+        .next-page-btn.show { opacity: 1; pointer-events: auto; }
 
         /* --- PAGE 2: PLAYLIST --- */
         #playlistPage { display: none; height: 100vh; flex-direction: column; background: linear-gradient(to bottom, #2d3436 0%, #121212 50%); padding: 20px 25px; overflow-y: auto; }
@@ -76,14 +100,22 @@
 
 <div id="shutdownOverlay"></div>
 
+<div id="flowerOverlay">
+    <div id="thrownFlower">🌹</div>
+</div>
+
 <div class="notebook-page" id="notebookPage">
     <div class="notebook-content">
         <span class="heart-icon">❤️</span>
         <h2>Happy Birthday Dumbahh Amna</h2>
         <p>Hamesha khush raho abaad raho mere sath raho...</p>
-        <p>Here is a flower catch it bih 🌹</p>
+        
+        <p id="preFlowerText">Umm before we start...</p>
+        <button class="flower-btn" id="flowerBtn" onclick="throwFlower()">Here is a flower catch it bih 🌹</button>
+        <p class="flower-btn hidden" id="postFlowerText">There, now go open the playlist... but the flower is yours. ❤️</p>
     </div>
-    <button class="next-page-btn" onclick="goToPlaylist()">
+    
+    <button class="next-page-btn" id="nextPageBtn" onclick="goToPlaylist()">
         <span style="color:var(--heart-red); font-size: 12px; font-weight:700; letter-spacing: 1px;">OPEN SURPRISE →</span>
     </button>
 </div>
@@ -159,6 +191,26 @@
     let index = 0;
     const audio = document.getElementById('audio');
 
+    // FLOWER THROWING LOGIC
+    function throwFlower() {
+        // Hide the button and pre-text, show the post-text
+        document.getElementById('preFlowerText').style.display = 'none';
+        document.getElementById('flowerBtn').classList.add('hidden');
+        document.getElementById('postFlowerText').classList.remove('hidden');
+
+        // Trigger the visual animation
+        const overlay = document.getElementById('flowerOverlay');
+        overlay.classList.add('show');
+        setTimeout(() => {
+            overlay.classList.add('thrown');
+        }, 50);
+
+        // Optional: Keep the flower there, or remove after animation. Let's keep it for effect!
+        // Enable the next page button
+        document.getElementById('nextPageBtn').classList.add('show');
+    }
+
+    // Existing App Logic...
     function buildPlaylist() {
         const list = document.getElementById('songList');
         songs.forEach((s, i) => {
